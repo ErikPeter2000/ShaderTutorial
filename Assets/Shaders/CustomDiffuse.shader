@@ -18,6 +18,9 @@ Shader "Lit/CustomDiffuse"
             #include "UnityCG.cginc"
             #include "UnityLightingCommon.cginc"
 
+            #pragma multi_compile_fwdbase nolightmap nodirlightmap nodynlightmap novertexlight // compile shader into multiple variant. Tutorial didnt give much detail
+            #include "AutoLight.cginc"
+
             struct v2f
             {
                 float3 worldPos : TEXCOORD0;
@@ -28,6 +31,8 @@ Shader "Lit/CustomDiffuse"
 
                 float2 uv : TEXCOORD4;
                 float4 pos : SV_POSITION;
+
+                SHADOW_COORDS(5) // put shadows data into TEXCOORD5
             };
 
             sampler2D _MainTex;
@@ -51,6 +56,9 @@ Shader "Lit/CustomDiffuse"
                 o.tspace2 = half3(wTangent.z, wBitangent.z, wNormal.z);
 
                 o.uv = v.texcoord;
+
+                TRANSFER_SHADOW(o)
+
                 return o;
             }
 
@@ -66,44 +74,22 @@ Shader "Lit/CustomDiffuse"
                 half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz)); // calculate the dot product between the normal and the light direction
 
                 fixed4 diff = nl * _LightColor0; // apply the light color to the diffuse color
-                diff.rgb += ShadeSH9(half4(worldNormal,1)); // add illumination from othe light probes
+                fixed3 ambient = ShadeSH9(half4(worldNormal,1)); // illumintaion from probes
 
-                fixed4 occ = tex2D(_OccMap, i.uv);
+                fixed shadow = SHADOW_ATTENUATION(i);
+
+                fixed3 lighting = diff*shadow + ambient;
+
 
                 fixed4 col = tex2D(_MainTex, i.uv);
-                col *= diff;
+                fixed4 occ = tex2D(_OccMap, i.uv);
+                col.rgb *= lighting;
                 col *= occ;
                 return col;
             }
             ENDCG
         }
 
-        Pass // This new pass will calculate shadows
-        {
-            Tags {"LightMode"="ShadowCaster"}
-
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma multi_compile_shadowcaster
-            #include "UnityCG.cginc"
-
-            struct v2f { 
-                V2F_SHADOW_CASTER;
-            };
-
-            v2f vert(appdata_base v)
-            {
-                v2f o;
-                TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-                return o;
-            }
-
-            float4 frag(v2f i) : SV_Target
-            {
-                SHADOW_CASTER_FRAGMENT(i)
-            }
-            ENDCG
-        }
+        UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
     }
 }
