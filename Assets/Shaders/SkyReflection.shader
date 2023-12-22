@@ -33,7 +33,7 @@ Shader "Unlit/SkyReflection"
             fixed4 frag (v2f i) : SV_Target
             {
                 half4 skyData = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, i.worldRefl); // sample skybox
-                half3 skyColor = DecodeHDR(skyData, unity_SpecCube0_HDR); // decode HDR color
+                half3 skyColor = DecodeHDR(skyData, unity_SpecCube0_HDR); // decode HDR color. unity_SpecCube0_HDR contains data about the reflection probe
                 fixed4 c = 0;
                 c.rgb = skyColor;
                 return c;
