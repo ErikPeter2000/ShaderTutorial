@@ -7,3 +7,4 @@ Assets/Textures/Bricks_Albedo.jpg filter=lfs diff=lfs merge=lfs -text
 Assets/Textures/Bricks_Occlusion.jpg filter=lfs diff=lfs merge=lfs -text
 Assets/Textures/Marble_Albedo.jpg filter=lfs diff=lfs merge=lfs -text
 Assets/Textures/Marble_Normal.jpg filter=lfs diff=lfs merge=lfs -text
+Scene.jpg filter=lfs diff=lfs merge=lfs -text

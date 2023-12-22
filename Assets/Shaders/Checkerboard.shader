@@ -11,9 +11,8 @@ Shader "Unlit/Checkerboard"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
 
-            struct v2f
+            struct v2f // this time our vertex shader needs to pass the uv coordinates to the fragment shader, so a scrupt is used to wrap it
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;

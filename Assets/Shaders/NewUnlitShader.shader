@@ -1,8 +1,4 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// This is High Level Shader Language (HLSL) code. It is used to define how the GPU should render the mesh.
-
-Shader "Unlit/NewUnlitShader" // This is the name of the shader
+shader "Unlit/NewUnlitShader" // This is the name of the shader
 {
     Properties // This is where you define all the properties you want to be able to change in the material inspector
     {
@@ -11,12 +7,9 @@ Shader "Unlit/NewUnlitShader" // This is the name of the shader
     }
     SubShader // Multiple subshaders can be used to define different shaders for different gpus. We only use one here.
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
-
         Pass // A pass represents an execution of a vertex and pixel shading algorithm. Sometime multiple passes are needed when interacting with lighting.
         {
-            CGPROGRAM // This is where the fun stuff happens. This is where you define the vertex and pixel shaders.
+            CGPROGRAM // This is where the fun stuff happens. Here you define the vertex and pixel shaders.
             #pragma vertex vert // vertex shader function
             #pragma fragment frag // pixel shader function
 
@@ -27,7 +20,7 @@ Shader "Unlit/NewUnlitShader" // This is the name of the shader
                 float2 uv : TEXCOORD0; // texture coordinate
             };
 
-            struct v2f // vertext shader outputs
+            struct v2f // vertex shader outputs
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
@@ -52,7 +45,7 @@ Shader "Unlit/NewUnlitShader" // This is the name of the shader
                 fixed4 col = tex2D(_MainTex, i.uv);
                 return col;
             }
-            ENDCG
+            ENDCG // end of the shader program
         }
     }
 }
