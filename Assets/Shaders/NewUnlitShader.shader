@@ -1,10 +1,13 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // This is High Level Shader Language (HLSL) code. It is used to define how the GPU should render the mesh.
 
 Shader "Unlit/NewUnlitShader" // This is the name of the shader
 {
     Properties // This is where you define all the properties you want to be able to change in the material inspector
     {
-        _MainTex ("Texture", 2D) = "white" {}
+        // removed scale offset so it doesnt appear in editor
+        [NoScaleOffset] _MainTex ("Texture", 2D) = "white" {}
     }
     SubShader // Multiple subshaders can be used to define different shaders for different gpus. We only use one here.
     {
@@ -14,44 +17,39 @@ Shader "Unlit/NewUnlitShader" // This is the name of the shader
         Pass // A pass represents an execution of a vertex and pixel shading algorithm. Sometime multiple passes are needed when interacting with lighting.
         {
             CGPROGRAM // This is where the fun stuff happens. This is where you define the vertex and pixel shaders.
-            #pragma vertex vert
-            #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
+            #pragma vertex vert // vertex shader function
+            #pragma fragment frag // pixel shader function
 
-            #include "UnityCG.cginc"
-
-            struct appdata
+            struct appdata // vertex shader inputs
             {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
+                // POSITION and TEXCOORD0 are Semantic Signifiers, they tell the GPU what the variables are.
+                float4 vertex : POSITION; // vertex position
+                float2 uv : TEXCOORD0; // texture coordinate
             };
 
-            struct v2f
+            struct v2f // vertext shader outputs
             {
                 float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-
-            v2f vert (appdata v)
+            v2f vert (appdata v) // vertex shader
             {
                 v2f o;
+                // transform position to clip space. Clip space is used by the GPU to determine which vertices whould be rendered and which are not visible.
+                // (multiply with model*view*projection matrix)
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                // just pass the texture coordinate
+                o.uv = v.uv;
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            sampler2D _MainTex; // texture to sample
+
+            fixed4 frag (v2f i) : SV_Target // pixel shader that returns the color represented as a low-precision fixed4.
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG

@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+Assets/Textures/UVGrid_Albedo.tif filter=lfs diff=lfs merge=lfs -text
+Assets/Textures/UVGrid2_Albedo.tif filter=lfs diff=lfs merge=lfs -text
