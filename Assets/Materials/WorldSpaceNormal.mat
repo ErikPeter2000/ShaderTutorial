@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Checkerboard
-  m_Shader: {fileID: 4800000, guid: c96f36da2a14daa48bf4287956f67398, type: 3}
+  m_Name: WorldSpaceNormal
+  m_Shader: {fileID: 4800000, guid: 17aa58073eaf6594584f54832740c6c8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -63,7 +63,6 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 30
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
