@@ -5,7 +5,7 @@ Shader "Unlit/ThreeTextures"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {} // albedo
-        _OcculsionMap("Occlusion", 2D) = "white" {}
+        _OcclusionMap("Occlusion", 2D) = "white" {}
         _BumpMap("Normal", 2D) = "bump" {}
     }
     SubShader
@@ -62,9 +62,9 @@ Shader "Unlit/ThreeTextures"
                 c.rgb = skyColor;
 
                 fixed3 base = tex2D(_MainTex, i.uv).rgb;
-                fixed3 occlusion = tex2D(_OcclusionMap, i.uv).rgb;
+                fixed3 occ = tex2D(_OcclusionMap, i.uv).rgb;
                 c.rgb *= base;
-                c.rgb *= occlusion;
+                c.rgb *= occ;
 
                 return c;
             }
